@@ -1,0 +1,161 @@
+<!-- src/main/resources/fxml/main.fxml -->
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="rootPane" xmlns="http://javafx.com/javafx" 
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.letterlover.client.controller.MainController"
+           styleClass="root-pane">
+
+    <!-- MENU SCREEN -->
+    <VBox fx:id="menuScreen" styleClass="menu-screen" alignment="CENTER" spacing="30">
+        <padding>
+            <Insets top="50" right="50" bottom="50" left="50"/>
+        </padding>
+        
+        <!-- Title -->
+        <VBox alignment="CENTER" spacing="10">
+            <Text text="💝 Letter Lover 💝" styleClass="title-text"/>
+            <Text text="Ein mittelalterliches Kartenspiel der Liebe" styleClass="subtitle-text"/>
+        </VBox>
+        
+        <!-- Player Name Input -->
+        <VBox alignment="CENTER" spacing="10" maxWidth="400">
+            <Label text="Dein Name:" styleClass="label-white"/>
+            <TextField fx:id="playerNameField" promptText="Spielername eingeben" 
+                      styleClass="custom-textfield"/>
+        </VBox>
+        
+        <!-- Create Room -->
+        <VBox alignment="CENTER" spacing="10" maxWidth="400">
+            <Button text="🎭 Neues Spiel erstellen" onAction="#onCreateRoom" 
+                   styleClass="primary-button" maxWidth="Infinity"/>
+        </VBox>
+        
+        <Separator prefWidth="300" styleClass="custom-separator"/>
+        
+        <!-- Join Room -->
+        <VBox alignment="CENTER" spacing="10" maxWidth="400">
+            <Label text="Oder einem Spiel beitreten:" styleClass="label-white"/>
+            <TextField fx:id="roomCodeField" promptText="Raum-Code (z.B. 1234)" 
+                      styleClass="custom-textfield"/>
+            <Button text="🚪 Raum beitreten" onAction="#onJoinRoom" 
+                   styleClass="secondary-button" maxWidth="Infinity"/>
+        </VBox>
+    </VBox>
+
+    <!-- LOBBY SCREEN -->
+    <VBox fx:id="lobbyScreen" visible="false" styleClass="lobby-screen" 
+          alignment="TOP_CENTER" spacing="20">
+        <padding>
+            <Insets top="30" right="30" bottom="30" left="30"/>
+        </padding>
+        
+        <!-- Room Code Display -->
+        <VBox alignment="CENTER" spacing="10">
+            <Text text="Lobby" styleClass="screen-title"/>
+            <HBox alignment="CENTER" spacing="10">
+                <Label text="Raum-Code:" styleClass="label-white-bold"/>
+                <Label fx:id="roomCodeLabel" text="0000" styleClass="room-code-label"/>
+                <Button text="📋" styleClass="icon-button"/>
+            </HBox>
+        </VBox>
+        
+        <!-- Players List -->
+        <VBox styleClass="panel" spacing="10" VBox.vgrow="ALWAYS" maxWidth="500">
+            <Label text="👥 Spieler im Raum (2-4)" styleClass="label-white-bold"/>
+            <ListView fx:id="playerListView" styleClass="custom-listview" 
+                     VBox.vgrow="ALWAYS"/>
+        </VBox>
+        
+        <!-- Start Game Button -->
+        <HBox alignment="CENTER" spacing="20">
+            <Button text="← Zurück" onAction="#onBackToMenu" 
+                   styleClass="secondary-button"/>
+            <Button fx:id="startGameButton" text="🎮 Spiel starten" 
+                   onAction="#onStartGame" styleClass="primary-button" 
+                   disable="true"/>
+        </HBox>
+    </VBox>
+
+    <!-- GAME SCREEN -->
+    <BorderPane fx:id="gameScreen" visible="false" styleClass="game-screen">
+        
+        <!-- TOP: Game Info -->
+        <top>
+            <HBox styleClass="game-header" alignment="CENTER" spacing="30">
+                <padding>
+                    <Insets top="15" right="20" bottom="15" left="20"/>
+                </padding>
+                <Label fx:id="currentPlayerLabel" text="Am Zug: Spieler 1" 
+                      styleClass="current-player-label"/>
+                <Label fx:id="deckCountLabel" text="Deck: 16 Karten" 
+                      styleClass="deck-count-label"/>
+                <Button text="⚙️" styleClass="icon-button"/>
+            </HBox>
+        </top>
+        
+        <!-- CENTER: Game Board -->
+        <center>
+            <VBox alignment="CENTER" spacing="30">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                
+                <!-- Other Players -->
+                <VBox alignment="CENTER" spacing="10">
+                    <Label text="Andere Spieler" styleClass="section-label"/>
+                    <FlowPane fx:id="otherPlayersPane" hgap="15" vgap="15" 
+                             alignment="CENTER" maxWidth="800"/>
+                </VBox>
+                
+                <Region VBox.vgrow="ALWAYS"/>
+                
+                <!-- Player Hand -->
+                <VBox alignment="CENTER" spacing="10">
+                    <Label text="Deine Hand" styleClass="section-label"/>
+                    <HBox fx:id="playerHandBox" alignment="CENTER" spacing="20"/>
+                </VBox>
+            </VBox>
+        </center>
+        
+        <!-- RIGHT: Chat & Log -->
+        <right>
+            <VBox styleClass="sidebar" prefWidth="300" spacing="15">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+                
+                <!-- Game Log -->
+                <VBox styleClass="panel" spacing="10" VBox.vgrow="ALWAYS">
+                    <Label text="📜 Spielverlauf" styleClass="panel-title"/>
+                    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" 
+                               styleClass="custom-scrollpane">
+                        <VBox fx:id="gameLogBox" spacing="5"/>
+                    </ScrollPane>
+                </VBox>
+                
+                <!-- Chat -->
+                <VBox styleClass="panel" spacing="10" VBox.vgrow="ALWAYS">
+                    <Label text="💬 Chat" styleClass="panel-title"/>
+                    <ListView fx:id="chatListView" styleClass="custom-listview" 
+                             VBox.vgrow="ALWAYS"/>
+                    <HBox spacing="5">
+                        <TextField fx:id="chatInputField" 
+                                  promptText="Nachricht schreiben..." 
+                                  styleClass="custom-textfield" 
+                                  HBox.hgrow="ALWAYS"
+                                  onAction="#onSendChat"/>
+                        <Button text="➤" onAction="#onSendChat" 
+                               styleClass="icon-button"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </right>
+    </BorderPane>
+
+</StackPane>
