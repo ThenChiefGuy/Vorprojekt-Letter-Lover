@@ -1,0 +1,35 @@
+name: Unzip Folder
+
+permissions:
+  contents: write
+
+on:
+  push:
+    paths:
+      - "*.zip"
+  workflow_dispatch:
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Unzip all ZIP files into repo root
+        run: |
+          for file in *.zip; do
+            unzip -o "$file" -d ./  
+          done
+
+      - name: Remove ZIP files (optional, keeps repo clean)
+        run: rm -f *.zip
+
+      - name: Commit unzipped files
+        run: |
+          git config user.name "Papa Unzip"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Unzipped folder from ${{ github.actor }}" || echo "No changes to commit"
+          git push
